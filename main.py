@@ -47,12 +47,41 @@ def check_system_requirements(
     4. WebDriverAgent running (for iOS only)
 
     Args:
-        device_type: Type of device tool (ADB, HDC, or IOS).
+        device_type: Type of device tool (ADB, HDC, IOS, or WINDOWS).
         wda_url: WebDriverAgent URL (for iOS only).
 
     Returns:
         True if all checks pass, False otherwise.
     """
+    # Skip checks for Desktop
+    if device_type == DeviceType.DESKTOP:
+        print("🔍 Checking system requirements...")
+        print("-" * 50)
+        print("1. Checking desktop environment...", end=" ")
+        try:
+            import platform
+            sys_name = platform.system()
+            print(f"✅ OK ({sys_name} {platform.release()})")
+        except Exception:
+            print("❌ FAILED")
+            return False
+        
+        print("2. Checking required libraries...", end=" ")
+        try:
+            import pyautogui
+            import mss
+            import pygetwindow
+            print("✅ OK")
+        except ImportError as e:
+            print("❌ FAILED")
+            print(f"   Error: Missing library: {e}")
+            print("   Solution: pip install pyautogui mss pygetwindow")
+            return False
+        
+        print("-" * 50)
+        print("✅ All system checks passed!\n")
+        return True
+    
     print("🔍 Checking system requirements...")
     print("-" * 50)
 
@@ -509,9 +538,17 @@ Examples:
     parser.add_argument(
         "--device-type",
         type=str,
-        choices=["adb", "hdc", "ios"],
+        choices=["adb", "hdc", "ios", "desktop"],
         default=os.getenv("PHONE_AGENT_DEVICE_TYPE", "adb"),
-        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone (default: adb)",
+        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone, desktop for Windows/macOS/Linux (default: adb)",
+    )
+
+    parser.add_argument(
+        "--screenshot-mode",
+        type=str,
+        choices=["auto", "primary", "all", "monitor_1", "monitor_2"],
+        default=os.getenv("PHONE_AGENT_SCREENSHOT_MODE", "auto"),
+        help="Screenshot mode for desktop (auto: detect active window, primary: main monitor, all: all monitors, monitor_1/2: specific monitor)",
     )
 
     parser.add_argument(
@@ -690,12 +727,24 @@ def main():
         device_type = DeviceType.ADB
     elif args.device_type == "hdc":
         device_type = DeviceType.HDC
+    elif args.device_type == "desktop":
+        device_type = DeviceType.DESKTOP
     else:  # ios
         device_type = DeviceType.IOS
 
     # Set device type globally for non-iOS devices
-    if device_type != DeviceType.IOS:
+    if device_type not in (DeviceType.IOS,):
         set_device_type(device_type)
+
+    # Set screenshot mode for desktop
+    if device_type == DeviceType.DESKTOP:
+        from phone_agent.desktop.config import set_screenshot_mode, ScreenshotMode
+        try:
+            mode = ScreenshotMode(args.screenshot_mode)
+            set_screenshot_mode(mode)
+        except ValueError:
+            print(f"Warning: Invalid screenshot mode '{args.screenshot_mode}', using AUTO")
+            set_screenshot_mode(ScreenshotMode.AUTO)
 
     # Enable HDC verbose mode if using HDC
     if device_type == DeviceType.HDC:
@@ -714,6 +763,13 @@ def main():
             print("  phone_agent/config/apps_ios.py")
             print("\nCurrently configured apps:")
             apps = list_ios_apps()
+        elif device_type == DeviceType.DESKTOP:
+            from phone_agent.config.apps_desktop import list_supported_apps as list_desktop_apps
+            print("Supported desktop apps:")
+            print("\nNote: App paths can be customized in:")
+            print("  phone_agent/config/apps_desktop.py")
+            print("\nCurrently configured apps:")
+            apps = list_desktop_apps()
         else:
             print("Supported Android apps:")
             apps = list_supported_apps()

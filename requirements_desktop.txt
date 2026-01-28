@@ -1,0 +1,5 @@
+# Windows-specific dependencies for AutoGLM
+pyautogui>=0.9.54
+mss>=9.0.1
+PyGetWindow>=0.0.9
+pillow>=10.0.0
