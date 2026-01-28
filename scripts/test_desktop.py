@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Test script for Windows module functionality."""
+"""Test script for desktop module functionality."""
 
 import sys
 
 
 def test_imports():
-    """Test if all Windows modules can be imported."""
-    print("Testing Windows module imports...")
+    """Test if all desktop modules can be imported."""
+    print("Testing desktop module imports...")
     try:
-        from phone_agent.windows import (
-            WindowsConnection,
+        from phone_agent.desktop import (
+            DesktopConnection,
             get_screenshot,
             get_current_app,
             tap,
@@ -20,8 +20,8 @@ def test_imports():
         return True
     except ImportError as e:
         print(f"❌ Import failed: {e}")
-        print("\nPlease install Windows dependencies:")
-        print("  pip install -r requirements_windows.txt")
+        print("\nPlease install desktop dependencies:")
+        print("  pip install -r requirements_desktop.txt")
         return False
 
 
@@ -29,7 +29,7 @@ def test_screenshot():
     """Test screenshot capture."""
     print("\nTesting screenshot capture...")
     try:
-        from phone_agent.windows import get_screenshot
+        from phone_agent.desktop import get_screenshot
         
         screenshot = get_screenshot()
         print(f"✅ Screenshot captured: {screenshot.width}x{screenshot.height}")
@@ -43,7 +43,7 @@ def test_current_app():
     """Test getting current app."""
     print("\nTesting current app detection...")
     try:
-        from phone_agent.windows import get_current_app
+        from phone_agent.desktop import get_current_app
         
         app = get_current_app()
         print(f"✅ Current app: {app}")
@@ -57,7 +57,7 @@ def test_device_list():
     """Test device listing."""
     print("\nTesting device listing...")
     try:
-        from phone_agent.windows import list_devices
+        from phone_agent.desktop import list_devices
         
         devices = list_devices()
         print(f"✅ Found {len(devices)} device(s)")
@@ -75,7 +75,7 @@ def test_device_factory():
     try:
         from phone_agent.device_factory import DeviceType, set_device_type, get_device_factory
         
-        set_device_type(DeviceType.WINDOWS)
+        set_device_type(DeviceType.DESKTOP)
         factory = get_device_factory()
         
         screenshot = factory.get_screenshot()
@@ -91,7 +91,7 @@ def test_device_factory():
 def main():
     """Run all tests."""
     print("=" * 60)
-    print("Windows Module Test Suite")
+    print("Desktop Module Test Suite")
     print("=" * 60)
     
     tests = [

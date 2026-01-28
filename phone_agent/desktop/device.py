@@ -1,11 +1,11 @@
-"""Device control for Windows using pyautogui."""
+"""Device control for desktop using pyautogui (cross-platform)."""
 
 import subprocess
 import time
 
 import pyautogui
 
-from phone_agent.config.apps_windows import APP_PACKAGES_WINDOWS
+from phone_agent.config.apps_desktop import APP_PACKAGES_DESKTOP
 
 # Disable pyautogui fail-safe (moving mouse to corner won't stop script)
 pyautogui.FAILSAFE = False
@@ -20,7 +20,7 @@ def tap(
     Args:
         x: X coordinate.
         y: Y coordinate.
-        device_id: Ignored for Windows.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     pyautogui.click(x, y)
@@ -37,7 +37,7 @@ def double_tap(
     Args:
         x: X coordinate.
         y: Y coordinate.
-        device_id: Ignored for Windows.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     pyautogui.doubleClick(x, y)
@@ -58,8 +58,8 @@ def long_press(
     Args:
         x: X coordinate.
         y: Y coordinate.
-        duration_ms: Ignored for Windows.
-        device_id: Ignored for Windows.
+        duration_ms: Ignored for desktop.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     pyautogui.rightClick(x, y)
@@ -85,7 +85,7 @@ def swipe(
         end_x: End X coordinate.
         end_y: End Y coordinate.
         duration_ms: Duration in milliseconds.
-        device_id: Ignored for Windows.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     duration = (duration_ms / 1000.0) if duration_ms else 0.5
@@ -100,7 +100,7 @@ def back(device_id: str | None = None, delay: float | None = None) -> None:
     Press Alt+Left (browser back).
 
     Args:
-        device_id: Ignored for Windows.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     pyautogui.hotkey("alt", "left")
@@ -110,10 +110,10 @@ def back(device_id: str | None = None, delay: float | None = None) -> None:
 
 def home(device_id: str | None = None, delay: float | None = None) -> None:
     """
-    Press Windows key (show desktop/start menu).
+    Press Windows/Command key (show desktop/start menu).
 
     Args:
-        device_id: Ignored for Windows.
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
     """
     pyautogui.press("win")
@@ -125,20 +125,20 @@ def launch_app(
     app_name: str, device_id: str | None = None, delay: float | None = None
 ) -> bool:
     """
-    Launch a Windows application.
+    Launch a desktop application.
 
     Args:
-        app_name: Application name (must be in APP_PACKAGES_WINDOWS).
-        device_id: Ignored for Windows.
+        app_name: Application name (must be in APP_PACKAGES_DESKTOP).
+        device_id: Ignored for desktop.
         delay: Optional delay after action in seconds.
 
     Returns:
         True if app was launched, False otherwise.
     """
-    if app_name not in APP_PACKAGES_WINDOWS:
+    if app_name not in APP_PACKAGES_DESKTOP:
         return False
 
-    app_path = APP_PACKAGES_WINDOWS[app_name]
+    app_path = APP_PACKAGES_DESKTOP[app_name]
 
     try:
         subprocess.Popen(app_path, shell=True)

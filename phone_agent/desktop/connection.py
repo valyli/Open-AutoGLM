@@ -1,4 +1,4 @@
-"""Connection management for Windows (minimal implementation for API compatibility)."""
+"""Connection management for desktop (minimal implementation for API compatibility)."""
 
 from dataclasses import dataclass
 from enum import Enum
@@ -20,31 +20,31 @@ class DeviceInfo:
     model: str | None = None
 
 
-class WindowsConnection:
-    """Windows connection manager (no actual connection needed)."""
+class DesktopConnection:
+    """Desktop connection manager (no actual connection needed)."""
 
     def connect(self, address: str) -> tuple[bool, str]:
-        """Not applicable for Windows."""
-        return False, "Windows doesn't support remote connections"
+        """Not applicable for desktop."""
+        return False, "Desktop doesn't support remote connections"
 
     def disconnect(self, address: str | None = None) -> tuple[bool, str]:
-        """Not applicable for Windows."""
-        return False, "Windows doesn't support remote connections"
+        """Not applicable for desktop."""
+        return False, "Desktop doesn't support remote connections"
 
     def enable_tcpip(
         self, port: int = 5555, device_id: str | None = None
     ) -> tuple[bool, str]:
-        """Not applicable for Windows."""
-        return False, "Windows doesn't support TCP/IP mode"
+        """Not applicable for desktop."""
+        return False, "Desktop doesn't support TCP/IP mode"
 
     def get_device_ip(self, device_id: str | None = None) -> str | None:
-        """Not applicable for Windows."""
+        """Not applicable for desktop."""
         return None
 
 
 def list_devices() -> list[DeviceInfo]:
     """
-    List Windows devices (always returns local machine).
+    List desktop devices (always returns local machine).
 
     Returns:
         List with single local device.

@@ -1,8 +1,8 @@
-"""Windows application package mappings."""
+"""Desktop application package mappings (Windows/macOS/Linux)."""
 
-# Windows application paths/commands
+# Desktop application paths/commands
 # Users can customize these paths based on their installation
-APP_PACKAGES_WINDOWS = {
+APP_PACKAGES_DESKTOP = {
     # Browsers
     "Chrome": "chrome.exe",
     "谷歌浏览器": "chrome.exe",
@@ -46,9 +46,9 @@ APP_PACKAGES_WINDOWS = {
 
 def list_supported_apps() -> list[str]:
     """
-    Get list of supported Windows application names.
+    Get list of supported desktop application names.
 
     Returns:
         List of application names.
     """
-    return list(APP_PACKAGES_WINDOWS.keys())
+    return list(APP_PACKAGES_DESKTOP.keys())

@@ -1,4 +1,4 @@
-"""Screenshot capture for Windows using mss."""
+"""Screenshot capture for desktop using mss (cross-platform)."""
 
 import base64
 import io
@@ -20,11 +20,11 @@ class Screenshot:
 
 def get_screenshot(device_id: str | None = None, timeout: int = 10) -> Screenshot:
     """
-    Capture Windows screen.
+    Capture desktop screen.
 
     Args:
-        device_id: Ignored for Windows (kept for API compatibility).
-        timeout: Ignored for Windows (kept for API compatibility).
+        device_id: Ignored for desktop (kept for API compatibility).
+        timeout: Ignored for desktop (kept for API compatibility).
 
     Returns:
         Screenshot object with image data.
@@ -53,7 +53,7 @@ def get_current_app(device_id: str | None = None) -> str:
     Get the currently active window title.
 
     Args:
-        device_id: Ignored for Windows (kept for API compatibility).
+        device_id: Ignored for desktop (kept for API compatibility).
 
     Returns:
         Active window title or "Desktop" if none.

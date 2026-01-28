@@ -53,17 +53,15 @@ def check_system_requirements(
     Returns:
         True if all checks pass, False otherwise.
     """
-    # Skip checks for Windows
-    if device_type == DeviceType.WINDOWS:
+    # Skip checks for Desktop
+    if device_type == DeviceType.DESKTOP:
         print("🔍 Checking system requirements...")
         print("-" * 50)
-        print("1. Checking Windows environment...", end=" ")
+        print("1. Checking desktop environment...", end=" ")
         try:
             import platform
-            if platform.system() == "Windows":
-                print(f"✅ OK ({platform.system()} {platform.release()})")
-            else:
-                print(f"⚠️  WARNING (Running on {platform.system()}, not Windows)")
+            sys_name = platform.system()
+            print(f"✅ OK ({sys_name} {platform.release()})")
         except Exception:
             print("❌ FAILED")
             return False
@@ -540,9 +538,9 @@ Examples:
     parser.add_argument(
         "--device-type",
         type=str,
-        choices=["adb", "hdc", "ios", "windows"],
+        choices=["adb", "hdc", "ios", "desktop"],
         default=os.getenv("PHONE_AGENT_DEVICE_TYPE", "adb"),
-        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone, windows for Windows PC (default: adb)",
+        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone, desktop for Windows/macOS/Linux (default: adb)",
     )
 
     parser.add_argument(
@@ -721,8 +719,8 @@ def main():
         device_type = DeviceType.ADB
     elif args.device_type == "hdc":
         device_type = DeviceType.HDC
-    elif args.device_type == "windows":
-        device_type = DeviceType.WINDOWS
+    elif args.device_type == "desktop":
+        device_type = DeviceType.DESKTOP
     else:  # ios
         device_type = DeviceType.IOS
 
@@ -747,13 +745,13 @@ def main():
             print("  phone_agent/config/apps_ios.py")
             print("\nCurrently configured apps:")
             apps = list_ios_apps()
-        elif device_type == DeviceType.WINDOWS:
-            from phone_agent.config.apps_windows import list_supported_apps as list_windows_apps
-            print("Supported Windows apps:")
+        elif device_type == DeviceType.DESKTOP:
+            from phone_agent.config.apps_desktop import list_supported_apps as list_desktop_apps
+            print("Supported desktop apps:")
             print("\nNote: App paths can be customized in:")
-            print("  phone_agent/config/apps_windows.py")
+            print("  phone_agent/config/apps_desktop.py")
             print("\nCurrently configured apps:")
-            apps = list_windows_apps()
+            apps = list_desktop_apps()
         else:
             print("Supported Android apps:")
             apps = list_supported_apps()
