@@ -10,6 +10,7 @@ class DeviceType(Enum):
     ADB = "adb"
     HDC = "hdc"
     IOS = "ios"
+    WINDOWS = "windows"
 
 
 class DeviceFactory:
@@ -31,7 +32,7 @@ class DeviceFactory:
 
     @property
     def module(self):
-        """Get the appropriate device module (adb or hdc)."""
+        """Get the appropriate device module (adb, hdc, or windows)."""
         if self._module is None:
             if self.device_type == DeviceType.ADB:
                 from phone_agent import adb
@@ -41,6 +42,10 @@ class DeviceFactory:
                 from phone_agent import hdc
 
                 self._module = hdc
+            elif self.device_type == DeviceType.WINDOWS:
+                from phone_agent import windows
+
+                self._module = windows
             else:
                 raise ValueError(f"Unknown device type: {self.device_type}")
         return self._module
@@ -126,7 +131,7 @@ class DeviceFactory:
         return self.module.list_devices()
 
     def get_connection_class(self):
-        """Get the connection class (ADBConnection or HDCConnection)."""
+        """Get the connection class (ADBConnection, HDCConnection, or WindowsConnection)."""
         if self.device_type == DeviceType.ADB:
             from phone_agent.adb import ADBConnection
 
@@ -135,6 +140,10 @@ class DeviceFactory:
             from phone_agent.hdc import HDCConnection
 
             return HDCConnection
+        elif self.device_type == DeviceType.WINDOWS:
+            from phone_agent.windows import WindowsConnection
+
+            return WindowsConnection
         else:
             raise ValueError(f"Unknown device type: {self.device_type}")
 

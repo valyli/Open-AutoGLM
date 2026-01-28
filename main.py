@@ -47,12 +47,43 @@ def check_system_requirements(
     4. WebDriverAgent running (for iOS only)
 
     Args:
-        device_type: Type of device tool (ADB, HDC, or IOS).
+        device_type: Type of device tool (ADB, HDC, IOS, or WINDOWS).
         wda_url: WebDriverAgent URL (for iOS only).
 
     Returns:
         True if all checks pass, False otherwise.
     """
+    # Skip checks for Windows
+    if device_type == DeviceType.WINDOWS:
+        print("🔍 Checking system requirements...")
+        print("-" * 50)
+        print("1. Checking Windows environment...", end=" ")
+        try:
+            import platform
+            if platform.system() == "Windows":
+                print(f"✅ OK ({platform.system()} {platform.release()})")
+            else:
+                print(f"⚠️  WARNING (Running on {platform.system()}, not Windows)")
+        except Exception:
+            print("❌ FAILED")
+            return False
+        
+        print("2. Checking required libraries...", end=" ")
+        try:
+            import pyautogui
+            import mss
+            import pygetwindow
+            print("✅ OK")
+        except ImportError as e:
+            print("❌ FAILED")
+            print(f"   Error: Missing library: {e}")
+            print("   Solution: pip install pyautogui mss pygetwindow")
+            return False
+        
+        print("-" * 50)
+        print("✅ All system checks passed!\n")
+        return True
+    
     print("🔍 Checking system requirements...")
     print("-" * 50)
 
@@ -509,9 +540,9 @@ Examples:
     parser.add_argument(
         "--device-type",
         type=str,
-        choices=["adb", "hdc", "ios"],
+        choices=["adb", "hdc", "ios", "windows"],
         default=os.getenv("PHONE_AGENT_DEVICE_TYPE", "adb"),
-        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone (default: adb)",
+        help="Device type: adb for Android, hdc for HarmonyOS, ios for iPhone, windows for Windows PC (default: adb)",
     )
 
     parser.add_argument(
@@ -690,11 +721,13 @@ def main():
         device_type = DeviceType.ADB
     elif args.device_type == "hdc":
         device_type = DeviceType.HDC
+    elif args.device_type == "windows":
+        device_type = DeviceType.WINDOWS
     else:  # ios
         device_type = DeviceType.IOS
 
     # Set device type globally for non-iOS devices
-    if device_type != DeviceType.IOS:
+    if device_type not in (DeviceType.IOS,):
         set_device_type(device_type)
 
     # Enable HDC verbose mode if using HDC
@@ -714,6 +747,13 @@ def main():
             print("  phone_agent/config/apps_ios.py")
             print("\nCurrently configured apps:")
             apps = list_ios_apps()
+        elif device_type == DeviceType.WINDOWS:
+            from phone_agent.config.apps_windows import list_supported_apps as list_windows_apps
+            print("Supported Windows apps:")
+            print("\nNote: App paths can be customized in:")
+            print("  phone_agent/config/apps_windows.py")
+            print("\nCurrently configured apps:")
+            apps = list_windows_apps()
         else:
             print("Supported Android apps:")
             apps = list_supported_apps()
