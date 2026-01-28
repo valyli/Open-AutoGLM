@@ -544,6 +544,14 @@ Examples:
     )
 
     parser.add_argument(
+        "--screenshot-mode",
+        type=str,
+        choices=["auto", "primary", "all", "monitor_1", "monitor_2"],
+        default=os.getenv("PHONE_AGENT_SCREENSHOT_MODE", "auto"),
+        help="Screenshot mode for desktop (auto: detect active window, primary: main monitor, all: all monitors, monitor_1/2: specific monitor)",
+    )
+
+    parser.add_argument(
         "task",
         nargs="?",
         type=str,
@@ -727,6 +735,16 @@ def main():
     # Set device type globally for non-iOS devices
     if device_type not in (DeviceType.IOS,):
         set_device_type(device_type)
+
+    # Set screenshot mode for desktop
+    if device_type == DeviceType.DESKTOP:
+        from phone_agent.desktop.config import set_screenshot_mode, ScreenshotMode
+        try:
+            mode = ScreenshotMode(args.screenshot_mode)
+            set_screenshot_mode(mode)
+        except ValueError:
+            print(f"Warning: Invalid screenshot mode '{args.screenshot_mode}', using AUTO")
+            set_screenshot_mode(ScreenshotMode.AUTO)
 
     # Enable HDC verbose mode if using HDC
     if device_type == DeviceType.HDC:
