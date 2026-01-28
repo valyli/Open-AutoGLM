@@ -124,9 +124,17 @@ ADB 调试能力，可通过 WiFi 或网络连接设备，实现灵活的远程�
 ### 1. 安装依赖
 
 ```bash
+# 基础依赖
 pip install -r requirements.txt 
 pip install -e .
+
+# 如果使用桌面模式（Windows/macOS/Linux），需要额外安装
+pip install -r requirements_desktop.txt
+# 或手动安装
+pip install pyautogui mss pygetwindow pillow
 ```
+
+**注意**：桌面模式详细配置请参考 [桌面环境配置指南](docs/desktop_setup.md)
 
 ### 2. 配置 ADB 或 HDC
 
