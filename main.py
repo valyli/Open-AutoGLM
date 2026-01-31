@@ -459,6 +459,13 @@ Examples:
         help="Maximum steps per task",
     )
 
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=int(os.getenv("PHONE_AGENT_MAX_TOKENS", "3000")),
+        help="Maximum tokens for model output (default: 3000)",
+    )
+
     # Device options
     parser.add_argument(
         "--device-id",
@@ -549,6 +556,13 @@ Examples:
         choices=["auto", "primary", "all", "monitor_1", "monitor_2"],
         default=os.getenv("PHONE_AGENT_SCREENSHOT_MODE", "auto"),
         help="Screenshot mode for desktop (auto: detect active window, primary: main monitor, all: all monitors, monitor_1/2: specific monitor)",
+    )
+
+    parser.add_argument(
+        "--image",
+        type=str,
+        metavar="PATH",
+        help="Path to an image file to show to the model (instead of screenshot)",
     )
 
     parser.add_argument(
@@ -806,6 +820,7 @@ def main():
         model_name=args.model,
         api_key=args.apikey,
         lang=args.lang,
+        max_tokens=args.max_tokens,
     )
 
     if device_type == DeviceType.IOS:
